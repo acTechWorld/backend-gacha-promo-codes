@@ -5,10 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
-const emailService = require('./services/emailService');
-const licencingKeyService = require('./services/licencingKeyService');
-const userService = require('./services/userService');
-
+const promoCodeController = require('./controllers/promoCodeController');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -65,16 +62,14 @@ const ipWhitelist = (req, res, next) => {
   };
 
 // Apply CORS and IP whitelist middleware globally, but override for specific routes
-app.use((req, res, next) => {
-  // Apply CORS and IP whitelist middleware to all other routes
-  cors(corsOptions)(req, res, () => ipWhitelist(req, res, next));
-});
+// app.use((req, res, next) => {
+//   // Apply CORS and IP whitelist middleware to all other routes
+//   cors(corsOptions)(req, res, () => ipWhitelist(req, res, next));
+// });
   
 
 // Routes
-app.use('/api/email', emailService);
-app.use('/api/licencing', licencingKeyService);
-app.use('/api/user', userService);
+app.use('/api', promoCodeController);
 
 
 // Start the server
