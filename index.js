@@ -21,6 +21,7 @@ const whiteListedOrigins = [
 //IP security
 const allowedIPs = [
     '86.195.103.7', // My IP
+    '109.27.168.126'
 ];
 
 // Configure CORS to allow specific origins
@@ -66,6 +67,7 @@ const ipWhitelist = (req, res, next) => {
 //   // Apply CORS and IP whitelist middleware to all other routes
 //   cors(corsOptions)(req, res, () => ipWhitelist(req, res, next));
 // });
+app.use(cors())
   
 
 // Routes

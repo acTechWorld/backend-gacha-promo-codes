@@ -33,6 +33,8 @@ router.get('/promo-codes', async (req, res) => {
           status: promoCode.status,
           creationDate: promoCode.created_at,
           modificationDate: promoCode.updated_at,
+          upVote: promoCode.up_vote,
+          downVote: promoCode.down_vote,
           awardDescription: promoCode.award_description,
           awardDetails: detailsMap.get(promoCode.id) || []
         };
@@ -47,7 +49,7 @@ router.get('/promo-codes', async (req, res) => {
 router.post('/promo-codes', async (req, res) => {
   try {
       // Extracting data from the request body
-      const { application, code, description, awardDescription, awardDetails, status } = req.body;
+      const { application, code, description, awardDescription, awardDetails, status, upVote, downVote } = req.body;
 
       // Step 1: Insert the new promo code into the promo_codes table
       const [resultSetHeader] = await promoCodeRepository.createPromoCode({
@@ -55,7 +57,9 @@ router.post('/promo-codes', async (req, res) => {
           code,
           status,
           description,
-          awardDescription
+          awardDescription,
+          upVote,
+          downVote,
       });
 
        // Extract the new promo code ID from the resultSetHeader
@@ -78,7 +82,9 @@ router.post('/promo-codes', async (req, res) => {
         status,
         description,
         awardDescription,
-        awardDetails
+        awardDetails,
+        upVote,
+        downVote,
     };
 
       // Return the created promo code with a 201 status
@@ -112,6 +118,8 @@ router.get('/promo-codes/:id', async (req, res) => {
           application: promoCode.application,
           code: promoCode.code,
           description: promoCode.description,
+          upVote: promoCode.up_vote,
+          downVote: promoCode.down_vote,
           creationDate: promoCode.created_at,
           modificationDate: promoCode.updated_at,
           awardDescription: promoCode.award_description,
@@ -158,7 +166,7 @@ router.put('/promo-codes/:id', async (req, res) => {
       const promo_code_id = req.params.id;
 
       // Extract the updated data from the request body
-      const { application, code, description, awardDescription, awardDetails, status } = req.body;
+      const { application, code, description, awardDescription, awardDetails, status, upVote, downVote } = req.body;
 
       // Step 1: Update the promo code in the promo_codes table
       const [updateResult] = await promoCodeRepository.updatePromoCode(promo_code_id, {
@@ -167,7 +175,9 @@ router.put('/promo-codes/:id', async (req, res) => {
           status,
           description,
           awardDescription,
-          awardDetails
+          awardDetails,
+          upVote,
+          downVote
       });
 
       // Check if the promo code was found and updated
@@ -194,7 +204,9 @@ router.put('/promo-codes/:id', async (req, res) => {
           code,
           description,
           awardDescription,
-          awardDetails
+          awardDetails,
+          upVote,
+          downVote
       };
 
       // Return the updated promo code with a 200 status
@@ -244,6 +256,8 @@ router.get('/promo-codes/application/:application', async (req, res) => {
               modificationDate: promoCode.updated_at,
               awardDescription: promoCode.award_description,
               application: promoCode.application,
+              upVote: promoCode.up_vote,
+              downVote: promoCode.down_vote,
               awardDetails: detailsMap.get(promoCode.id) || []
           };
       });
