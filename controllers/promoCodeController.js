@@ -146,6 +146,7 @@ router.get('/promo-codes/:id', async (req, res) => {
           application: promoCode.application,
           code: promoCode.code,
           description: promoCode.description,
+          status: promoCode.status,
           upVote: promoCode.up_vote,
           downVote: promoCode.down_vote,
           creationDate: promoCode.created_at,
