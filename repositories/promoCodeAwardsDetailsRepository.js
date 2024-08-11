@@ -1,47 +1,59 @@
-// repository.js
+// repositories/promoCodeAwardsRepository.js
 const db = require('../config/db');
 
-
-
-// Create promo code Awards details
+// Create a new promo code award detail
 const createPromoCodeAwardsDetail = (data) => {
-  const {promo_code_id, label, count} = data
-  const query = 'INSERT INTO promo_code_awards_details (promo_code_id, label, count) VALUES (?, ?, ?)';
-  return db.query(query, [promo_code_id, label, count]);
+    const { promo_code_id, award_item_id, count } = data;
+    const query = 'INSERT INTO promo_code_awards_details (promo_code_id, award_item_id, count) VALUES (?, ?, ?)';
+    return db.query(query, [promo_code_id, award_item_id, count]);
 };
 
-// Get all promo code Awards details
+// Get all promo code award details
 const getAllPromoCodeAwardsDetails = () => {
-  return db.query('SELECT * FROM promo_code_awards_details');
+    return db.query('SELECT * FROM promo_code_awards_details');
 };
 
-// Get promo code Awards details by promo code ID
+// Get promo code award details by promo code ID
 const getPromoCodeAwardsDetailsByPromoCodeId = (promo_code_id) => {
-  return db.query('SELECT * FROM promo_code_awards_details WHERE promo_code_id = ?', [promo_code_id]);
+    return db.query('SELECT * FROM promo_code_awards_details WHERE promo_code_id = ?', [promo_code_id]);
 };
 
-// Update promo code Awards details
+// Get promo code award details by award item ID
+const getPromoCodeAwardsDetailsByAwardItemId = (award_item_id) => {
+    return db.query('SELECT * FROM promo_code_awards_details WHERE award_item_id = ?', [award_item_id]);
+};
+
+// Update a promo code award detail
 const updatePromoCodeAwardsDetail = (id, data) => {
-  const {promo_code_id, label, count} = data
-  const query = 'UPDATE promo_code_awards_details SET promo_code_id = ?, label = ?, count = ? WHERE id = ?';
-  return db.query(query, [promo_code_id, label, count, id]);
+    const { promo_code_id, award_item_id, count } = data;
+    const query = 'UPDATE promo_code_awards_details SET promo_code_id = ?, award_item_id = ?, count = ? WHERE id = ?';
+    return db.query(query, [promo_code_id, award_item_id, count, id]);
 };
 
-// Delete promo code Awards details
+// Delete a promo code award detail
 const deletePromoCodeAwardsDetail = (id) => {
-  return db.query('DELETE FROM promo_code_awards_details WHERE id = ?', [id]);
+    return db.query('DELETE FROM promo_code_awards_details WHERE id = ?', [id]);
 };
 
-const deletePromoCodeAwardsDetailsByPromoCodeId = async (promoCodeId) => {
-  const query = 'DELETE FROM promo_code_awards_details WHERE promo_code_id = ?';
-  await db.query(query, [promoCodeId]);
+// Delete all promo code award details by promo code ID
+const deletePromoCodeAwardsDetailsByPromoCodeId = (promo_code_id) => {
+    const query = 'DELETE FROM promo_code_awards_details WHERE promo_code_id = ?';
+    return db.query(query, [promo_code_id]);
+};
+
+// Delete all promo code award details by award item ID
+const deletePromoCodeAwardsDetailsByAwardItemId = (award_item_id) => {
+    const query = 'DELETE FROM promo_code_awards_details WHERE award_item_id = ?';
+    return db.query(query, [award_item_id]);
 };
 
 module.exports = {
-  createPromoCodeAwardsDetail,
-  getAllPromoCodeAwardsDetails,
-  getPromoCodeAwardsDetailsByPromoCodeId,
-  updatePromoCodeAwardsDetail,
-  deletePromoCodeAwardsDetail,
-  deletePromoCodeAwardsDetailsByPromoCodeId
+    createPromoCodeAwardsDetail,
+    getAllPromoCodeAwardsDetails,
+    getPromoCodeAwardsDetailsByPromoCodeId,
+    getPromoCodeAwardsDetailsByAwardItemId,
+    updatePromoCodeAwardsDetail,
+    deletePromoCodeAwardsDetail,
+    deletePromoCodeAwardsDetailsByPromoCodeId,
+    deletePromoCodeAwardsDetailsByAwardItemId
 };

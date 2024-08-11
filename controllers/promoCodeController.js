@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const promoCodeRepository = require('../repositories/promoCodeRepository');
 const promoCodeAwardsDetailsRepository = require('../repositories/promoCodeAwardsDetailsRepository');
+const awardItemRepository = require('../repositories/awardItemRepository');
 
 router.get('/promo-codes', async (req, res) => {
     try {
@@ -12,13 +13,30 @@ router.get('/promo-codes', async (req, res) => {
       // Fetch all promo code Awards descriptions and details
       const [promoCodeAwardsDetails] = await promoCodeAwardsDetailsRepository.getAllPromoCodeAwardsDetails();
 
+      // Fetch all award items
+      const [awardItems] = await awardItemRepository.getAllAwardItems();
+
+    
+        // Create a map of award items by ID
+        const itemInfoMap = new Map();
+        awardItems.forEach(item => {
+            itemInfoMap.set(item.id, {
+                label: item.label,
+                image: item.image,
+                application: item.application
+            });
+        });
+
       const detailsMap = new Map();
       promoCodeAwardsDetails.forEach(detail => {
         if (!detailsMap.has(detail.promo_code_id)) {
           detailsMap.set(detail.promo_code_id, []);
         }
+        const itemInfo = itemInfoMap.get(detail.award_item_id)
         detailsMap.get(detail.promo_code_id).push({
-          label: detail.label,
+          awardItemId: detail.award_item_id,
+          label: itemInfo?.label,
+          image: itemInfo?.image,
           count: detail.count
         });
       });
@@ -69,7 +87,7 @@ router.post('/promo-codes', async (req, res) => {
       for (const detail of awardDetails) {
           await promoCodeAwardsDetailsRepository.createPromoCodeAwardsDetail({
               promo_code_id: newPromoCodeId,
-              label: detail.label,
+              award_item_id: detail.awardItemId,
               count: detail.count
           });
       }
@@ -110,8 +128,20 @@ router.get('/promo-codes/:id', async (req, res) => {
       }
 
       // Step 3: Fetch the award details related to the promo code
-      const [awardDetails] = await promoCodeAwardsDetailsRepository.getPromoCodeAwardsDetailsByPromoCodeId(promo_code_id);
+      let [awardDetails] = await promoCodeAwardsDetailsRepository.getPromoCodeAwardsDetailsByPromoCodeId(promo_code_id);
 
+        // Fetch all award items
+        const [awardItems] = await awardItemRepository.getAwardItemsByApplication(promoCode.application);
+
+      awardDetails = awardDetails.map(detail => {
+        const itemInfo = awardItems.find(item => item.id === detail.award_item_id);
+        return {
+            awardItemId: detail.award_item_id,
+            label: itemInfo?.label,
+            image: itemInfo?.image,
+            count: detail.count
+          }
+      });
       // Step 4: Construct the result object
       const result = {
           id: promoCode.id,
@@ -192,7 +222,7 @@ router.put('/promo-codes/:id', async (req, res) => {
       for (const detail of awardDetails) {
           await promoCodeAwardsDetailsRepository.createPromoCodeAwardsDetail({
               promo_code_id,
-              label: detail.label,
+              award_item_id: detail.awardItemId,
               count: detail.count
           });
       }
@@ -234,15 +264,31 @@ router.get('/promo-codes/application/:application', async (req, res) => {
       // Fetch all promo code award details
       const [promoCodeAwardsDetails] = await promoCodeAwardsDetailsRepository.getAllPromoCodeAwardsDetails();
 
+       // Fetch all award items
+       const [awardItems] = await awardItemRepository.getAwardItemsByApplication(application);
+
+       // Create a map of award items by ID
+       const itemInfoMap = new Map();
+       awardItems.forEach(item => {
+           itemInfoMap.set(item.id, {
+               label: item.label,
+               image: item.image,
+               application: item.application
+           });
+       });
+
       const detailsMap = new Map();
       promoCodeAwardsDetails.forEach(detail => {
           if (!detailsMap.has(detail.promo_code_id)) {
               detailsMap.set(detail.promo_code_id, []);
           }
-          detailsMap.get(detail.promo_code_id).push({
-              label: detail.label,
-              count: detail.count
-          });
+          const itemInfo = itemInfoMap.get(detail.award_item_id)
+        detailsMap.get(detail.promo_code_id).push({
+          awardItemId: detail.award_item_id,
+          label: itemInfo?.label,
+          image: itemInfo?.image,
+          count: detail.count
+        });
       });
 
       // Merge promo codes with their details

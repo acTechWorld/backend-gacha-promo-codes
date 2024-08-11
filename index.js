@@ -6,6 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const promoCodeController = require('./controllers/promoCodeController');
+const awardItemController = require('./controllers/awardItemController');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -72,6 +73,7 @@ app.use(cors())
 
 // Routes
 app.use('/api', promoCodeController);
+app.use('/api', awardItemController);
 
 
 // Start the server
