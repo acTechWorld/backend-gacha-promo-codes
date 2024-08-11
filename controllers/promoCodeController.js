@@ -35,7 +35,7 @@ router.get('/promo-codes', async (req, res) => {
         const itemInfo = itemInfoMap.get(detail.award_item_id)
         detailsMap.get(detail.promo_code_id).push({
           awardItemId: detail.award_item_id,
-          label: itemInfo?.label,
+          label: itemInfo?.label || detail.label,
           image: itemInfo?.image,
           count: detail.count
         });
@@ -53,7 +53,6 @@ router.get('/promo-codes', async (req, res) => {
           modificationDate: promoCode.updated_at,
           upVote: promoCode.up_vote,
           downVote: promoCode.down_vote,
-          awardDescription: promoCode.award_description,
           awardDetails: detailsMap.get(promoCode.id) || []
         };
       });
@@ -67,7 +66,7 @@ router.get('/promo-codes', async (req, res) => {
 router.post('/promo-codes', async (req, res) => {
   try {
       // Extracting data from the request body
-      const { application, code, description, awardDescription, awardDetails, status, upVote, downVote } = req.body;
+      const { application, code, description, awardDetails, status, upVote, downVote } = req.body;
 
       // Step 1: Insert the new promo code into the promo_codes table
       const [resultSetHeader] = await promoCodeRepository.createPromoCode({
@@ -75,7 +74,6 @@ router.post('/promo-codes', async (req, res) => {
           code,
           status,
           description,
-          awardDescription,
           upVote,
           downVote,
       });
@@ -88,6 +86,7 @@ router.post('/promo-codes', async (req, res) => {
           await promoCodeAwardsDetailsRepository.createPromoCodeAwardsDetail({
               promo_code_id: newPromoCodeId,
               award_item_id: detail.awardItemId,
+              label: detail.label,
               count: detail.count
           });
       }
@@ -99,7 +98,6 @@ router.post('/promo-codes', async (req, res) => {
         code,
         status,
         description,
-        awardDescription,
         awardDetails,
         upVote,
         downVote,
@@ -137,7 +135,7 @@ router.get('/promo-codes/:id', async (req, res) => {
         const itemInfo = awardItems.find(item => item.id === detail.award_item_id);
         return {
             awardItemId: detail.award_item_id,
-            label: itemInfo?.label,
+            label: itemInfo?.label || detail.label,
             image: itemInfo?.image,
             count: detail.count
           }
@@ -152,7 +150,6 @@ router.get('/promo-codes/:id', async (req, res) => {
           downVote: promoCode.down_vote,
           creationDate: promoCode.created_at,
           modificationDate: promoCode.updated_at,
-          awardDescription: promoCode.award_description,
           awardDetails: awardDetails || []
       };
 
@@ -196,7 +193,7 @@ router.put('/promo-codes/:id', async (req, res) => {
       const promo_code_id = req.params.id;
 
       // Extract the updated data from the request body
-      const { application, code, description, awardDescription, awardDetails, status, upVote, downVote } = req.body;
+      const { application, code, description, awardDetails, status, upVote, downVote } = req.body;
 
       // Step 1: Update the promo code in the promo_codes table
       const [updateResult] = await promoCodeRepository.updatePromoCode(promo_code_id, {
@@ -204,7 +201,6 @@ router.put('/promo-codes/:id', async (req, res) => {
           code,
           status,
           description,
-          awardDescription,
           awardDetails,
           upVote,
           downVote
@@ -223,6 +219,7 @@ router.put('/promo-codes/:id', async (req, res) => {
           await promoCodeAwardsDetailsRepository.createPromoCodeAwardsDetail({
               promo_code_id,
               award_item_id: detail.awardItemId,
+              label: detail.label,
               count: detail.count
           });
       }
@@ -233,7 +230,6 @@ router.put('/promo-codes/:id', async (req, res) => {
           application,
           code,
           description,
-          awardDescription,
           awardDetails,
           upVote,
           downVote
@@ -285,7 +281,7 @@ router.get('/promo-codes/application/:application', async (req, res) => {
           const itemInfo = itemInfoMap.get(detail.award_item_id)
         detailsMap.get(detail.promo_code_id).push({
           awardItemId: detail.award_item_id,
-          label: itemInfo?.label,
+          label: itemInfo?.label || detail.label,
           image: itemInfo?.image,
           count: detail.count
         });
@@ -300,7 +296,6 @@ router.get('/promo-codes/application/:application', async (req, res) => {
               status: promoCode.status,
               creationDate: promoCode.created_at,
               modificationDate: promoCode.updated_at,
-              awardDescription: promoCode.award_description,
               application: promoCode.application,
               upVote: promoCode.up_vote,
               downVote: promoCode.down_vote,

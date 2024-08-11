@@ -3,9 +3,9 @@ const db = require('../config/db');
 
 // Create a new promo code award detail
 const createPromoCodeAwardsDetail = (data) => {
-    const { promo_code_id, award_item_id, count } = data;
-    const query = 'INSERT INTO promo_code_awards_details (promo_code_id, award_item_id, count) VALUES (?, ?, ?)';
-    return db.query(query, [promo_code_id, award_item_id, count]);
+    const { promo_code_id, award_item_id, count, label } = data;
+    const query = 'INSERT INTO promo_code_awards_details (promo_code_id, award_item_id, count, label) VALUES (?, ?, ?, ?)';
+    return db.query(query, [promo_code_id, award_item_id, count, label]);
 };
 
 // Get all promo code award details

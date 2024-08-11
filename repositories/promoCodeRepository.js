@@ -3,9 +3,9 @@ const db = require('../config/db');
 
 // Create promo code
 const createPromoCode = (data) => {
-  const { application, code, description, status, awardDescription, upVote, downVote } = data;
-  const query = 'INSERT INTO promo_codes (application, description, code, status, award_description, up_vote, down_vote) VALUES (?, ?, ?, ?, ?, ?, ?)';
-  return db.query(query, [application, description, code, status, awardDescription, upVote, downVote]);
+  const { application, code, description, status, upVote, downVote } = data;
+  const query = 'INSERT INTO promo_codes (application, description, code, status, up_vote, down_vote) VALUES (?, ?, ?, ?, ?, ?)';
+  return db.query(query, [application, description, code, status, upVote, downVote]);
 };
 
 // Get all promo codes
@@ -20,9 +20,9 @@ const getPromoCodeById = (id) => {
 
 // Update promo code
 const updatePromoCode = (id, data) => {
-  const { application, description, code, status, awardDescription, upVote, downVote } = data;
-  const query = 'UPDATE promo_codes SET application = ?, description = ?, code = ?, status = ?, award_description = ?, up_vote = ?, down_vote = ? WHERE id = ?';
-  return db.query(query, [application, description, code, status, awardDescription, upVote, downVote, id]);
+  const { application, description, code, status, upVote, downVote } = data;
+  const query = 'UPDATE promo_codes SET application = ?, description = ?, code = ?, status = ?, up_vote = ?, down_vote = ? WHERE id = ?';
+  return db.query(query, [application, description, code, status, upVote, downVote, id]);
 };
 
 // Delete promo code
